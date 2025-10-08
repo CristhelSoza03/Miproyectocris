@@ -1,13 +1,46 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { db } from "../database/firebaseconfig.js";
-import { collection, getDocs, doc, deleteDoc } from "firebase/firestore";
+import { collection, getDocs, doc, deleteDoc, addDoc } from "firebase/firestore";
 import ListaProductos from "../components/ListaProductos";
 import FormularioProductos from "../components/FormularioProductos";
 import TablaProductos from "../components/TablaProductos.js";
 
 const Productos = () => {
   const [productos, setProductos] = useState([]);
+
+const [nuevoProducto, setNuevoProducto] = useState({
+  nombre: "",
+  precio: "",
+});
+
+const manejoCambio = (nombre, valor) => {
+  setNuevoProducto((prev) => ({
+    ...prev,
+    [nombre]: valor,
+  }));
+}
+
+const guardarProducto = async () => {
+  try {
+    if (nuevoProducto.nombre && nuevoProducto.precio) {
+
+      await addDoc(collection(db, "productos"), {
+        nombre: nuevoProducto.nombre,
+        precio: parseFloat(nuevoProducto.precio),
+      });
+
+      cargarDatos(); // Recargar lista
+
+      setNuevoProducto ({ nombre: "", precio: ""});
+
+    } else {
+      alert("Por favor, complete todos los campos.");
+    }
+  } catch (error) {
+    console.error("Error al registrar producto:", error);
+  }
+};
 
   const cargarDatos = async () => {
     try {
@@ -38,12 +71,12 @@ const Productos = () => {
 
   return (
     <View style={styles.container}>
-      <FormularioProductos cargarDatos={cargarDatos} />
-      <ListaProductos productos={productos} />
-      <TablaProductos 
-      productos={productos} 
-      eliminarProducto={eliminarProducto}
-      cargarDatos={cargarDatos}/>
+
+      <FormularioProductos
+      nuevoProducto={nuevoProducto}
+      manejoCambio={manejoCambio}
+      guardarProducto={guardarProducto}
+      />
     </View>
   );
 };

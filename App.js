@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { db } from './src/database/firebaseconfig';
 import { collection, getDocs } from 'firebase/firestore';
 import Productos from './src/view/Productos';
+import Clientes from "./src/views/Clientes";
 
 export default function App() {
   
@@ -11,4 +12,14 @@ export default function App() {
       <Productos/>
     </>
   );
+
+}
+
+export default function App(){
+  return(
+    <>
+    <Clientes/>
+
+    </>
+  )
 }
