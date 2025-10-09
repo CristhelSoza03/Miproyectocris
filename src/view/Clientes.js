@@ -1,89 +1,61 @@
-import React, { useEffect, useState } from "react";
-import {View, StyleSheet} from "react-native";
-import { db } from "../database/firebaseconfig";
-import { collection, doc, getDocs, deleteDoc } from "firebase/firestore";
-import ListaClientes from "../components/clientes/ListaClientes";
-import FormularioClientes from "../components/clientes/FormularioClientes";
-import TablaClientes from "../components/clientes/TablaClientes";
-import TituloPromedio from "../components/clientes/TituloPromedio";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet } from 'react-native';
+import { db } from '../database/firebaseconfig.js';
+import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import ListaClientes from '../components/ListaClientes.js';
+import FormularioClientes from '../components/FormularioClientes.js';
+import TablaClientes from '../components/TablaClientes.js';
 
-const Clientes = () =>{
-
-  const calcularPromedioAPI = async (lista) => {
-  try {
-    const response = await fetch("https://g6tek5o9xf.execute-api.us-east-2.amazonaws.com/promedio", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ edades: lista }),
-    });
-
-    const data = await response.json();
-    setPromedio(data.promedio || null);
-  } catch (error) {
-    console.error("Error al calcular promedio en API:", error);
-  }
-};
-
-
-  const eliminarCliente = async (id)=>{
-      try{
-        await deleteDoc(doc(db, "clientes", id));
-        cargarDatos();
-      }catch (error){
-        console.error("Error al eliminar", error)
-      }
-    }
-  
+const Clientes = () => {
   const [clientes, setClientes] = useState([]);
-  const [promedio, setPromedio] = useState(null);
 
-
-  const cargarDatos = async () =>{
-    try{
-      const querySnapshot = await getDocs(collection(db, "clientes"));
-      const data = querySnapshot.docs.map((doc) =>({
-        id:doc.id,
-        ...doc.data(),
+  // Cargar clientes desde Firebase
+  const cargarDatos = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "Clientes"));
+      const data = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        nombre: doc.data().nombre || "",
+        apellido: doc.data().apellido || "",
+        sexo: doc.data().sexo || "", // agregando campo sexo
       }));
       setClientes(data);
-
-      if(data.length > 0){
-        calcularPromedioAPI(data);
-      }else{
-        setClientes(null)
-      }
-    }catch (error){
-      console.error("Error al obtener documentos", error);
+    } catch (error) {
+      console.error("Error al obtener documentos:", error);
     }
   };
 
-  useEffect(() =>{
-    cargarDatos();
-  },[]);
+  // Eliminar cliente
+  const eliminarCliente = async (id) => {
+    try{
+      await deleteDoc(doc(db, "Clientes", id));
+      cargarDatos();
+    } catch (error) {
+      console.error("Error al eliminar: ", error);
+    }
+  };
 
-  return(
+  useEffect(() => {
+    cargarDatos();
+  }, []);
+
+  return (
     <View style={styles.container}>
       <FormularioClientes cargarDatos={cargarDatos}/>
-      
-
+      <ListaClientes clientes={clientes}/>
       <TablaClientes
-      clientes={clientes}
-      eliminarCliente={eliminarCliente}
-      
+        clientes={clientes}
+        eliminarCliente={eliminarCliente}
       />
-      <TituloPromedio 
-      promedio={promedio} />
-      
     </View>
   );
 };
 
-const styles= StyleSheet.create({
-  container:{
-    flex:1,
-    padding:20
-  }
-})
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+});
 
 export default Clientes;

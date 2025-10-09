@@ -1,46 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { db } from "../database/firebaseconfig.js";
-import { collection, getDocs, doc, deleteDoc, addDoc } from "firebase/firestore";
+import { collection, getDocs, doc, deleteDoc, addDoc, updateDoc } from 'firebase/firestore';
 import ListaProductos from "../components/ListaProductos";
 import FormularioProductos from "../components/FormularioProductos";
 import TablaProductos from "../components/TablaProductos.js";
 
 const Productos = () => {
   const [productos, setProductos] = useState([]);
-
-const [nuevoProducto, setNuevoProducto] = useState({
-  nombre: "",
-  precio: "",
-});
-
-const manejoCambio = (nombre, valor) => {
-  setNuevoProducto((prev) => ({
-    ...prev,
-    [nombre]: valor,
-  }));
-}
-
-const guardarProducto = async () => {
-  try {
-    if (nuevoProducto.nombre && nuevoProducto.precio) {
-
-      await addDoc(collection(db, "productos"), {
-        nombre: nuevoProducto.nombre,
-        precio: parseFloat(nuevoProducto.precio),
-      });
-
-      cargarDatos(); // Recargar lista
-
-      setNuevoProducto ({ nombre: "", precio: ""});
-
-    } else {
-      alert("Por favor, complete todos los campos.");
-    }
-  } catch (error) {
-    console.error("Error al registrar producto:", error);
-  }
-};
+  const [modoEdicion, setModoEdicion] = useState(false);
+  const [productoId, setProductoId] = useState(null);
+  const [nuevoProducto, setNuevoProducto] = useState({
+    nombre: "",
+    precio: "",
+    });
 
   const cargarDatos = async () => {
     try {
@@ -65,17 +38,82 @@ const guardarProducto = async () => {
     }
   };
 
+    const manejoCambio = (nombre, valor) => {
+    setNuevoProducto((prev) => ({
+      ...prev,
+      [nombre]: valor,
+    }));
+  };
+
+    const guardarProducto = async () => {
+    try {
+      if (nuevoProducto.nombre && nuevoProducto.precio) {
+
+        await addDoc(collection(db, "Productos"), {
+          nombre: nuevoProducto.nombre,
+          precio: parseFloat(nuevoProducto.precio),
+        });
+        cargarDatos(); //Recarga lista
+
+        setNuevoProducto({nombre: "", precio: ""});
+      } else {
+        alert("Por favor, complete todos los campos.");
+      }
+    } catch (error) {
+      console.error("Error al registrar producto: ", error);
+    }
+  };
+
+    const actualizarProducto = async () => {
+    try{
+      if(nuevoProducto.nombre && nuevoProducto.precio) {
+        
+        await updateDoc(doc(db, "Productos", productoId), {
+          nombre: nuevoProducto.nombre,
+          precio: parseFloat(nuevoProducto.precio),
+        });
+
+        setNuevoProducto({nombre: "", precio: ""});
+
+        setModoEdicion(false); //Volver al modo registro
+        setProductoId(null);
+
+        cargarDatos(); //Recargar Lista
+      } else {
+        alert("Por favor, complete todos los campos");
+      }
+    } catch (error) {
+      console.error("Error al actualizar producto: ", error);
+    }
+  };
+
+    const editarProducto = (producto) => {
+    setNuevoProducto({
+      nombre: producto.nombre,
+      precio: producto.precio.toString(),
+    });
+    setProductoId(producto.id);
+    setModoEdicion(true)
+  };
+
   useEffect(() => {
     cargarDatos();
   }, []);
 
   return (
     <View style={styles.container}>
-
       <FormularioProductos
-      nuevoProducto={nuevoProducto}
-      manejoCambio={manejoCambio}
-      guardarProducto={guardarProducto}
+       nuevoProducto={nuevoProducto}
+       manejoCambio={manejoCambio}
+       guardarProducto={guardarProducto}
+       actualizarProducto={actualizarProducto}
+       modoEdicion={modoEdicion}
+       />
+      <ListaProductos productos={productos} />
+      <TablaProductos 
+      productos={productos} 
+      eliminarProducto={eliminarProducto}
+      editarProducto={editarProducto}
       />
     </View>
   );
