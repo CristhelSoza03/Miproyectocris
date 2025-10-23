@@ -1,135 +1,89 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Button } from 'react-native';
-import { db } from '../database/firebaseconfig.js';
-import { collection, getDocs, deleteDoc, doc, addDoc, updateDoc } from 'firebase/firestore';
-import ListaClientes from '../components/ListaClientes.js';
-import FormularioClientes from '../components/FormularioClientes.js';
-import TablaClientes from '../components/TablaClientes.js';
+import React, { useEffect, useState } from "react";
+import {View, StyleSheet} from "react-native";
+import { db } from "../database/firebaseconfig";
+import { collection, doc, getDocs, deleteDoc } from "firebase/firestore";
+import FormularioClientes from "../components/FormularioClientes";
+import TablaClientes from "../components/TablaClientes";
+import TituloPromedio from "../components/TituloPromedio";
 
-const Clientes = ({ cerrarSesion }) => {
+
+const Clientes = () =>{
+
+  const calcularPromedioAPI = async (lista) => {
+  try {
+    const response = await fetch("https://g6tek5o9xf.execute-api.us-east-2.amazonaws.com/promedio", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ edades: lista }),
+    });
+
+    const data = await response.json();
+    setPromedio(data.promedio || null);
+  } catch (error) {
+    console.error("Error al calcular promedio en API:", error);
+  }
+};
+
+
+  const eliminarCliente = async (id)=>{
+      try{
+        await deleteDoc(doc(db, "clientes", id));
+        cargarDatos();
+      }catch (error){
+        console.error("Error al eliminar", error)
+      }
+    }
+  
   const [clientes, setClientes] = useState([]);
-  const [modoEdicion, setModoEdicion] = useState(false);
-  const [clienteId, setClienteId] = useState(null);
-  const [nuevoCliente, setNuevoCliente] = useState({
-    nombre: "",
-    apellido: "",
-    sexo: "",
-  });
+  const [promedio, setPromedio] = useState(null);
 
-  // Cargar clientes desde Firebase
-  const cargarDatos = async () => {
-    try {
-      const querySnapshot = await getDocs(collection(db, "Clientes"));
-      const data = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        nombre: doc.data().nombre || "",
-        apellido: doc.data().apellido || "",
-        sexo: doc.data().sexo || "",
+
+  const cargarDatos = async () =>{
+    try{
+      const querySnapshot = await getDocs(collection(db, "clientes"));
+      const data = querySnapshot.docs.map((doc) =>({
+        id:doc.id,
+        ...doc.data(),
       }));
       setClientes(data);
-    } catch (error) {
-      console.error("Error al obtener documentos:", error);
-    }
-  };
+      console.log("Clientes", data);
 
-  // Eliminar cliente
-  const eliminarCliente = async (id) => {
-    try {
-      await deleteDoc(doc(db, "Clientes", id));
-      cargarDatos();
-    } catch (error) {
-      console.error("Error al eliminar:", error);
-    }
-  };
-
-  // Manejar cambios en los inputs
-  const manejoCambio = (nombre, valor) => {
-    setNuevoCliente((prev) => ({
-      ...prev,
-      [nombre]: valor,
-    }));
-  };
-
-  // Guardar nuevo cliente
-  const guardarCliente = async () => {
-    try {
-      if (nuevoCliente.nombre && nuevoCliente.apellido && nuevoCliente.sexo) {
-        await addDoc(collection(db, "Clientes"), {
-          nombre: nuevoCliente.nombre,
-          apellido: nuevoCliente.apellido,
-          sexo: nuevoCliente.sexo,
-        });
-        setNuevoCliente({ nombre: "", apellido: "", sexo: "" });
-        cargarDatos();
-      } else {
-        alert("Por favor, complete todos los campos.");
+      if(data.length > 0){
+        calcularPromedioAPI(data);
+      }else{
+        setClientes(null)
       }
-    } catch (error) {
-      console.error("Error al registrar cliente: ", error);
+    }catch (error){
+      console.error("Error al obtener documentos", error);
     }
   };
 
-  // Actualizar cliente existente
-  const actualizarCliente = async () => {
-    try {
-      if (nuevoCliente.nombre && nuevoCliente.apellido && nuevoCliente.sexo) {
-        await updateDoc(doc(db, "Clientes", clienteId), {
-          nombre: nuevoCliente.nombre,
-          apellido: nuevoCliente.apellido,
-          sexo: nuevoCliente.sexo,
-        });
-        setNuevoCliente({ nombre: "", apellido: "", sexo: "" });
-        setModoEdicion(false);
-        setClienteId(null);
-        cargarDatos();
-      } else {
-        alert("Por favor, complete todos los campos.");
-      }
-    } catch (error) {
-      console.error("Error al actualizar cliente: ", error);
-    }
-  };
-
-  // Editar cliente
-  const editarCliente = (cliente) => {
-    setNuevoCliente({
-      nombre: cliente.nombre,
-      apellido: cliente.apellido,
-      sexo: cliente.sexo,
-    });
-    setClienteId(cliente.id);
-    setModoEdicion(true);
-  };
-
-  useEffect(() => {
+  useEffect(() =>{
     cargarDatos();
-  }, []);
+  },[]);
 
-  return (
+  return(
     <View style={styles.container}>
-      <FormularioClientes
-        nuevoCliente={nuevoCliente}
-        manejoCambio={manejoCambio}
-        guardarCliente={guardarCliente}
-        actualizarCliente={actualizarCliente}
-        modoEdicion={modoEdicion}
-      />
-      <ListaClientes clientes={clientes} />
+      <FormularioClientes cargarDatos={cargarDatos}/>
+      
+
       <TablaClientes
-        clientes={clientes}
-        eliminarCliente={eliminarCliente}
-        editarCliente={editarCliente}
+      clientes={clientes}
+      eliminarCliente={eliminarCliente}
+      
       />
-      <Button title="Cerrar Sesión" onPress={cerrarSesion} />
+      <TituloPromedio 
+      promedio={promedio} />
+      
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-});
+const styles= StyleSheet.create({
+  container:{
+    flex:1,
+    padding:20
+  }
+})
 
 export default Clientes;

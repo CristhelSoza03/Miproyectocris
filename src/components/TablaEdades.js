@@ -1,8 +1,9 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
-import BotonEliminarEdad from "./BotonEliminacionEdad.js";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
+import BotonEditarEdad from "./BotonEditarEdad.js";
+import BotonEliminarEdad from "./BotonEliminarEdad.js";
 
-const TablaEdades = ({ edades, eliminarEdad, editarEdad }) => {
+const TablaEdades = ({ edades, eliminarEdad, cargarDatos }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>Tabla de Edades</Text>
@@ -21,12 +22,12 @@ const TablaEdades = ({ edades, eliminarEdad, editarEdad }) => {
             <Text style={styles.celda}>{item.nombre}</Text>
             <Text style={styles.celda}>{item.edad}</Text>
             <View style={styles.celdaAcciones}>
-              <TouchableOpacity
-                style={styles.botonActualizar}
-                onPress={() => editarEdad(item)}
-              >
-                <Text>✏️</Text>
-              </TouchableOpacity>
+              <BotonEditarEdad
+                id={item.id}
+                nombreInicial={item.nombre}
+                edadInicial={item.edad}
+                cargarDatos={cargarDatos}
+              />
               <BotonEliminarEdad id={item.id} eliminarEdad={eliminarEdad} />
             </View>
           </View>
@@ -56,14 +57,6 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   textoEncabezado: { fontWeight: "bold", fontSize: 17, textAlign: "center" },
-  botonActualizar: {
-    padding: 4,
-    borderRadius: 5,
-    alignItems: "center",
-    justifyContent: "center",
-    alignSelf: "center",
-    backgroundColor: "#99c99aff",
-  },
 });
 
 export default TablaEdades;
