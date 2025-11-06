@@ -5,7 +5,7 @@ const TituloPromedio = ({ promedio }) => {
   return (
     <Text style={styles.titulo}>
       {promedio !== null
-        ?  `Promedio: ${promedio.toFixed(2)} `
+        ? `Promedio: ${promedio.toFixed(2)}`
         : "Sin datos para calcular promedio"}
     </Text>
   );

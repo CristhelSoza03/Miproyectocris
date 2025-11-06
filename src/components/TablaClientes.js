@@ -1,28 +1,35 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
-import BotonEliminacionClientes from "./BotonEliminacionClientes";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import BotonEliminarCliente from "./BotonEliminarCliente";
 
-const TablaClientes = ({ clientes, eliminarCliente }) => {
+const TablaClientes = ({ clientes, eliminarCliente, editarCliente }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>Tabla de Clientes</Text>
 
+      {/* Encabezado */}
       <View style={[styles.fila, styles.encabezado]}>
         <Text style={[styles.celda, styles.textoEncabezado]}>Nombre</Text>
         <Text style={[styles.celda, styles.textoEncabezado]}>Apellido</Text>
-        <Text style={[styles.celda, styles.textoEncabezado]}>Edad</Text>
-        <Text style={[styles.celdaAcciones, styles.textoEncabezado]}>Acciones</Text>
+        <Text style={[styles.celda, styles.textoEncabezado]}>Sexo</Text>
+        <Text style={[styles.celda, styles.textoEncabezado]}>Acciones</Text>
       </View>
 
-      <ScrollView> 
-        { clientes === null ? <Text>No hay clientes registrados.</Text> : clientes.map((item) => (
+      {/* Contenido */}
+      <ScrollView>
+        {clientes.map((item) => (
           <View key={item.id} style={styles.fila}>
             <Text style={styles.celda}>{item.nombre}</Text>
             <Text style={styles.celda}>{item.apellido}</Text>
-            <Text style={styles.celda}>{item.edad}</Text>
-
-            <View style={[styles.celdaAcciones]}>
-              <BotonEliminacionClientes id={item.id} eliminarCliente={eliminarCliente}/>
+            <Text style={styles.celda}>{item.sexo}</Text>
+            <View style={styles.celdaAcciones}>
+              <TouchableOpacity
+                style={styles.botonActualizar}
+                onPress={() => editarCliente(item)}
+              >
+                <Text>✏️</Text>
+              </TouchableOpacity>
+              <BotonEliminarCliente id={item.id} eliminarCliente={eliminarCliente} />
             </View>
           </View>
         ))}
@@ -40,7 +47,7 @@ const styles = StyleSheet.create({
   titulo: {
     fontSize: 22,
     fontWeight: "bold",
-    marginBottom: 30,
+    marginBottom: 10,
   },
   fila: {
     flexDirection: "row",
@@ -50,7 +57,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   encabezado: {
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#dcedf3ff",
   },
   celda: {
     flex: 1,
@@ -64,11 +71,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
   },
-
   textoEncabezado: {
     fontWeight: "bold",
     fontSize: 17,
     textAlign: "center",
+  },
+  botonActualizar: {
+    padding: 4,
+    borderRadius: 5,
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
+    backgroundColor: "#99c99aff",
   },
 });
 

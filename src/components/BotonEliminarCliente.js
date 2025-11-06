@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, Modal, StyleSheet } from 'react-native';
 
-const BotonEliminarUsuario = ({id, eliminarUsuario}) => {
+const BotonEliminarCliente = ({id, eliminarCliente}) => {
 
   const [visible, setVisible] = useState(false);
 
   const confirmarEliminar = () => {
     setVisible(false);
-    eliminarUsuario(id);
+    eliminarCliente(id);
   };
   return(
     <View>
@@ -29,7 +29,7 @@ const BotonEliminarUsuario = ({id, eliminarUsuario}) => {
       >
         <View style={styles.overlay}>
           <View style={styles.modal}>
-            <Text style={styles.texto}>¿Desea eliminar este usuario?</Text>
+            <Text style={styles.texto}>¿Desea eliminar este cliente?</Text>
 
             <View style={styles.fila}>
               <TouchableOpacity
@@ -107,4 +107,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default BotonEliminarUsuario;
+export default BotonEliminarCliente;

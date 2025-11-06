@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Alert
-} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../database/firebaseconfig';
 
@@ -20,9 +13,9 @@ const Login = ({ onLoginSuccess }) => {
       return;
     }
 
-    try {
+    try{
       await signInWithEmailAndPassword(auth, email, password);
-      onLoginSuccess(); // Notifica al componente App que el login fue exitoso
+      onLoginSuccess(); //Notifica al componente App que el login fue exitoso
     } catch (error) {
       console.log(error);
       let mensaje = "Error al iniciar sesión.";
@@ -46,62 +39,68 @@ const Login = ({ onLoginSuccess }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>Iniciar Sesión</Text>
-
       <TextInput
         style={styles.input}
-        placeholder="Correo electrónico"
+        placeholder='Correo electrónico'
         value={email}
         onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
+        keyboardType='email-adress'
+        autoCapitalize='none'
       />
 
       <TextInput
         style={styles.input}
-        placeholder="Contraseña"
+        placeholder='Contraseña'
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
 
-      <TouchableOpacity style={styles.boton} onPress={manejarLogin}>
+      <TouchableOpacity 
+        style={styles.boton}
+        onPress={manejarLogin}
+      >
         <Text style={styles.textoBoton}>Entrar</Text>
       </TouchableOpacity>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: 'center',
     padding: 20,
-    backgroundColor: "#e64343ff",
+    backgroundColor: '#f9f9f9',
   },
+
   titulo: {
     fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
+    fontWeight: 'bold',
+    textAlign: 'center',
     marginBottom: 20,
   },
+
   input: {
     borderWidth: 1,
-    borderColor: "#a33f3fff",
+    borderColor: "#ccc",
     padding: 10,
     borderRadius: 8,
     marginBottom: 10,
-    backgroundColor: "white",
+    backgroundColor: 'white',
   },
+
   boton: {
-    backgroundColor: "#2196F3",
+    backgroundColor: '#2196F3',
     padding: 12,
     borderRadius: 8,
-    alignItems: "center",
+    alignItems: 'center',
   },
+  
   textoBoton: {
-    color: "white",
+    color: 'white',
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
 });
 
