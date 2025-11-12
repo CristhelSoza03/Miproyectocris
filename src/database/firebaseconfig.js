@@ -5,8 +5,9 @@ import Constants from "expo-constants";
 import "react-native-get-random-values";
 import "react-native-url-polyfill/auto";
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+import { getDatabase } from "firebase/database";
 
-const { extra } = Constants.expoConfig;
+const { extra } = Constants.expoConfig;  
 
 // Configuración Web de Firebase
 const firebaseConfig = {
@@ -15,6 +16,7 @@ const firebaseConfig = {
   projectId: extra.FIREBASE_PROJECT_ID,
   messagingSenderId: extra.FIREBASE_MESSAGING_SENDER_ID,
   appId: extra.FIREBASE_APP_ID,
+  databaseURL: extra.FIREBASE_DATABASE_URL
 };
 
 // Inicializar Firebase
@@ -26,5 +28,6 @@ const auth = initializeAuth(app, {
 });
 
 const db = getFirestore(app);
+const realtimeDB = getDatabase(app);
 
-export { app, auth, db };
+export { app, auth, db, realtimeDB };
