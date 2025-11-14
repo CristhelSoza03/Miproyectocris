@@ -131,31 +131,31 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#f9f9f9" },
+  container: { flex: 1, backgroundColor: "#e2d8d8ff" },
 
   menu: {
     flexDirection: "row",
     justifyContent: "space-around",
-    backgroundColor: "#e5e5e5",
-    paddingVertical: 10,
+    backgroundColor: "#fcfcfcff",
+    paddingVertical: 1,
   },
 
   boton: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
+    paddingVertical: 1,
+    paddingHorizontal: 1,
   },
 
   textoBoton: {
-    fontSize: 14,
-    color: "#333",
+    fontSize: 12,
+    color: "#0c0c0cff",
   },
 
   activo: {
-    borderBottomWidth: 2,
-    borderBottomColor: "#007bff",
+    borderBottomWidth: 1,
+    borderBottomColor: "#28598dff",
   },
 
   contenido: {
-    flex: 1,
+    flex: 2,
   },
 });

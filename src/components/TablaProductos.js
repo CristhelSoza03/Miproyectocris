@@ -45,26 +45,26 @@ const styles = StyleSheet.create({
   },
 
   titulo: { 
-    fontSize: 22, 
+    fontSize: 20, 
     fontWeight: "bold", 
-    marginBottom: 10 
+    marginBottom: 1 
   },
 
   fila: {
     flexDirection: "row",
     borderBottomWidth: 1,
-    borderColor: "#ccc",
-    paddingVertical: 6,
+    borderColor: "#f8f8f8ff",
+    paddingVertical: 1,
     alignItems: "center",
   },
 
   encabezado: {
-    backgroundColor: "#dcedf3ff",
+    backgroundColor: "#adccd8ff",
   },
 
   celda: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 14,
     textAlign: "center",
   },
 
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
   
   textoEncabezado: {
     fontWeight: "bold",
-    fontSize: 17,
+    fontSize: 15,
     textAlign: "center",
   },
 

@@ -120,9 +120,9 @@ const IMCRealtime = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, marginTop: 50 },
-  titulo: { fontSize: 22, fontWeight: "bold", marginBottom: 20 },
-  subtitulo: { fontSize: 18, marginTop: 20, fontWeight: "bold" },
+  container: { flex: 1, padding: 20, marginTop: 30 },
+  titulo: { fontSize: 20, fontWeight: "bold", marginBottom: 1 },
+  subtitulo: { fontSize: 15, marginTop: 10, fontWeight: "bold" },
   input: {
     borderWidth: 1,
     borderColor: "#aaa",

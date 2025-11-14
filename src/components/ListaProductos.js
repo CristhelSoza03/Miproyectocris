@@ -19,8 +19,8 @@ const ListaProductos = ({ productos }) => {
 };
   const styles = StyleSheet.create({  
   container: {flex:1, justifyContent:"center"},
-  titulo: {fontSize:22, fontWeight:"bold", marginBottom:5},
-  item: {padding:5, marginBottom:5},
+  titulo: {fontSize:20, fontWeight:"bold", marginBottom:1},
+  item: {padding:5, marginBottom:1},
   });
 
 export default ListaProductos;

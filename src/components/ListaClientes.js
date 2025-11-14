@@ -23,13 +23,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   titulo: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 1,
   },
   item: {
-    fontSize: 18,
-    marginBottom: 5,
+    fontSize: 15  ,
+    marginBottom: 1,
   },
 });
 
